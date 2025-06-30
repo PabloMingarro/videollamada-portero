@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <style> body, video { margin:0; padding:0; width:100%; height:100%; background:black; } video { object-fit:cover;} </style>
+</head>
+<body>
+  <video id="remoteVideo" autoplay playsinline></video>
+  <script>
+    const room = new URLSearchParams(location.search).get("room") || "puerta1";
+    const peer = new Peer(room + "-receptor", {
+      host: location.hostname,
+      port: +location.port,
+      path: "/peerjs/myapp"
+    });
+    peer.on("call", call => {
+      call.answer(); 
+      call.on("stream", s => document.getElementById("remoteVideo").srcObject = s);
+    });
+  </script>
+</body>
+</html>
